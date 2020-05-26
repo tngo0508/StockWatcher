@@ -5,7 +5,7 @@ import json;
 msft = yf.Ticker("MSFT");
 
 # Write data to file in current powershell dir
-file = open("msft.txt","w");
+file = open("./log/msft.txt","w");
 file.write(json.dumps(msft.info));
 file.close();
 
