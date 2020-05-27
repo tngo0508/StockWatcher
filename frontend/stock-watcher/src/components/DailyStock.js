@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
-// import axios from "axios";
-import moment from "moment";
+// import moment from "moment";
 
 export default class DailyStock extends Component {
   constructor(props) {
@@ -91,7 +90,7 @@ export default class DailyStock extends Component {
         return response.json();
       })
       .then((data) => {
-        // console.log(data);
+        console.log(data);
         const stockTimeSeries = Object.keys(data)[1];
 
         Object.keys(data[stockTimeSeries]).map((date) => {
@@ -109,14 +108,14 @@ export default class DailyStock extends Component {
 
         let temp = stockChartXValuesFunction.map((x, idx) => {
           return {
-            x: moment(new Date(x)).format("DD MMM YYYY"),
+            x,
             y: stockChartYValuesFunction[idx].slice(0, 4).map((p) => {
               return parseFloat(p).toFixed(2);
             }),
           };
         });
 
-        // console.log(temp);
+        console.log(temp);
 
         this.setState({
           stockChartXValues: stockChartXValuesFunction,

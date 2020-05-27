@@ -99,7 +99,7 @@ export default class MonthlyStock extends Component {
 
         let temp = stockChartXValuesFunction.map((x, idx) => {
           return {
-            x: moment(new Date(x)).format("DD MMM YYYY"),
+            x,
             y: stockChartYValuesFunction[idx].slice(0, 4).map((p) => {
               return parseFloat(p).toFixed(2);
             }),
