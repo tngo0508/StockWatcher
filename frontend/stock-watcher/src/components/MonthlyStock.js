@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
-// import axios from "axios";
 import moment from "moment";
 
-export default class Stock extends Component {
+export default class MonthlyStock extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,36 +10,54 @@ export default class Stock extends Component {
       stockChartYValues: [],
 
       series: [],
+      // series: [{
+      //   name: "STOCK ABC",
+      //   data: series.monthDataSeries1.prices
+      // }],
       options: {
         chart: {
-          type: "candlestick",
-          height: 400,
-          width: 100,
-        },
-        title: {
-          text: "AMZN stock",
-          align: "left",
-        },
-        plotOptions: {
-          candlestick: {
-            colors: {
-              upward: "#35BA88",
-              downward: "#DF7D46",
-            },
+          type: "area",
+          height: 350,
+          zoom: {
+            enabled: false,
           },
         },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          curve: "straight",
+        },
+
+        title: {
+          text: "Company ABC Daily Stocks",
+          align: "left",
+        },
+        subtitle: {
+          text: "Price Movements",
+          align: "left",
+        },
+        labels: [],
         xaxis: {
           type: "datetime",
           labels: {
+            rotateAlways: false,
+            formatter: function (value, timestamp, index) {
+              return moment(new Date(timestamp)).format("DD MMM YYYY");
+            },
+          },
+          tickAmount: 12,
+        },
+        yaxis: {
+          opposite: true,
+          labels: {
             formatter: function (value) {
-              return moment(value).format("MMM DD HH:mm");
+              return value.toString() + " USD";
             },
           },
         },
-        yaxis: {
-          tooltip: {
-            enabled: true,
-          },
+        legend: {
+          horizontalAlign: "left",
         },
       },
     };
@@ -53,7 +70,8 @@ export default class Stock extends Component {
   fetchStock() {
     const API_KEY = "VH65CPTN371HAJQL";
     let stockSymbol = "AMZN";
-    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${stockSymbol}&outputsize=compact&apikey=${API_KEY}`;
+    const timeSeriesSetting = "MONTHLY";
+    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${timeSeriesSetting}&symbol=${stockSymbol}&outputsize=compact&apikey=${API_KEY}`;
 
     let stockChartXValuesFunction = [];
     let stockChartYValuesFunction = [];
@@ -64,11 +82,12 @@ export default class Stock extends Component {
       })
       .then((data) => {
         // console.log(data);
+        const stockTimeSeries = Object.keys(data)[1];
 
-        Object.keys(data["Time Series (Daily)"]).map((date) => {
+        Object.keys(data[stockTimeSeries]).map((date) => {
           // console.log(date);
           stockChartXValuesFunction.push(date);
-          const prices = Object.values(data["Time Series (Daily)"][date]);
+          const prices = Object.values(data[stockTimeSeries][date]);
           // console.log(prices);
           stockChartYValuesFunction.push(prices);
 
@@ -94,27 +113,33 @@ export default class Stock extends Component {
           stockChartYValues: stockChartYValuesFunction,
           series: [
             {
+              name: stockSymbol,
               data: temp,
             },
           ],
+          options: {
+            ...this.state.options,
+            title: {
+              ...this.state.title,
+              text: timeSeriesSetting + " trading for " + stockSymbol,
+            },
+            labels: stockChartXValuesFunction,
+          },
         });
       });
   }
 
   render() {
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-10 mt-5 mx-auto">
-            <h1 className="text-center">Stock market</h1>
-            <Chart
-              options={this.state.options}
-              series={this.state.series}
-              type="candlestick"
-              // height="450"
-              // width="100%"
-            />
-          </div>
+      <div className="row">
+        <div className="col mt-5">
+          <Chart
+            options={this.state.options}
+            series={this.state.series}
+            type="area"
+            height={350}
+            width="100%"
+          />
         </div>
       </div>
     );

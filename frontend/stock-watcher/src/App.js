@@ -1,12 +1,18 @@
 import React from "react";
-import Stock from "./components/Stock";
+import DailyStock from "./components/DailyStock";
+import MonthlyStock from "./components/MonthlyStock";
+import WeeklyStock from "./components/WeeklyStock";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <Stock></Stock>
+      <div className="container">
+        <DailyStock />
+        <WeeklyStock />
+        <MonthlyStock />
+      </div>
     </div>
   );
 }
