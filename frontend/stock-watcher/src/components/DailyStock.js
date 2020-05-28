@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
+import InputForum from "./InputForum";
 // import moment from "moment";
 
 export default class DailyStock extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      stockName: "AMZN",
+
       stockChartXValues: [],
       stockChartYValues: [],
 
@@ -70,6 +73,9 @@ export default class DailyStock extends Component {
         },
       },
     };
+
+    this.fetchStock = this.fetchStock.bind(this);
+    this.updateStockChart = this.updateStockChart.bind(this);
   }
 
   componentDidMount() {
@@ -78,9 +84,8 @@ export default class DailyStock extends Component {
 
   fetchStock() {
     const API_KEY = "VH65CPTN371HAJQL";
-    let stockSymbol = "AMZN";
     const timeSeriesSetting = "DAILY";
-    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${timeSeriesSetting}&symbol=${stockSymbol}&outputsize=compact&apikey=${API_KEY}`;
+    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${timeSeriesSetting}&symbol=${this.state.stockName}&outputsize=compact&apikey=${API_KEY}`;
 
     let stockChartXValuesFunction = [];
     let stockChartYValuesFunction = [];
@@ -122,7 +127,7 @@ export default class DailyStock extends Component {
           stockChartYValues: stockChartYValuesFunction,
           series: [
             {
-              name: stockSymbol,
+              name: this.state.stockName,
               data: temp,
             },
           ],
@@ -130,7 +135,7 @@ export default class DailyStock extends Component {
             ...this.state.options,
             title: {
               ...this.state.title,
-              text: timeSeriesSetting + " trading for " + stockSymbol,
+              text: timeSeriesSetting + " trading for " + this.state.stockName,
             },
             labels: stockChartXValuesFunction,
           },
@@ -138,19 +143,33 @@ export default class DailyStock extends Component {
       });
   }
 
+  updateStockChart(e){
+    this.setState({stockName: e.target.attributes['stockname'].value}, function () {
+      console.log(this.state.stockName);
+      this.fetchStock();
+    });
+    //console.log(e.target.attributes['stockname'].value);
+    //this.render();
+  }
+
   render() {
+    //this.fetchStock();
+
     return (
-      <div className="row">
-        <div className="col mt-5">
-          <h1 className="text-center">Stock market</h1>
-          <Chart
-            options={this.state.options}
-            series={this.state.series}
-            type="area"
-            height={350}
-            width="100%"
-          />
+      <div>
+        <div className="row">
+          <div className="col mt-5">
+            <h1 className="text-center">Stock market</h1>
+            <Chart
+              options={this.state.options}
+              series={this.state.series}
+              type="area"
+              height={350}
+              width="100%"
+            />
+          </div>
         </div>
+        <InputForum OnClick={this.updateStockChart}></InputForum>
       </div>
     );
   }

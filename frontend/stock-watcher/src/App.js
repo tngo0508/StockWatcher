@@ -9,9 +9,8 @@ function App() {
   return (
     <div className="App">
       <div className="container">
-        <DailyStock />
-        <WeeklyStock />
-        <MonthlyStock />
+        <DailyStock></DailyStock>
+        
       </div>
     </div>
   );
