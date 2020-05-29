@@ -1,19 +1,30 @@
 import React, {Component} from "react";
+import DailyStock from "./DailyStock";
+import MonthlyStock from "./MonthlyStock";
+import WeeklyStock from "./WeeklyStock";
 
 export default class InputForum extends Component{
     constructor(props){
         super(props);
 
+        this.input = React.createRef();
+
         this.state = {
             stockName: "",
+            text: "",
         }
 
-        this.updateState = this.updateState.bind(this);
+        this.updateStock = this.updateStock.bind(this);
         this.getStockInfo = this.getStockInfo.bind(this);
+        this.updateText = this.updateText.bind(this);
     }
 
-    updateState(e){
-        this.setState({stockName: e.target.value});
+    updateStock(e){
+        this.setState({stockName: this.input.current["value"]});
+    }
+
+    updateText(e){
+        this.searchText = e.target.value;
     }
 
     getStockInfo(e){
@@ -24,9 +35,12 @@ export default class InputForum extends Component{
         return (
             <div>
                 <form>
-                    <input type="text" placeholder="Enter Stock Name" value = {this.state.stockName} onChange={this.updateState}></input>
-                    <input type="button" stockname={this.state.stockName} value="search" onClick={this.props.OnClick}></input>
+                    <input type="text" placeholder="Enter Stock Name" ref = {this.input} ></input>
+                    <input type="button" stockname={this.state.stockName} value="search" onClick={this.updateStock}></input>
                 </form>
+                <DailyStock stockname={this.state.stockName}></DailyStock>
+                <WeeklyStock stockname={this.state.stockName}></WeeklyStock>
+                <MonthlyStock stockname={this.state.stockName}></MonthlyStock>
             </div>
             
         );

@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
-import moment from "moment";
 
 export default class MonthlyStock extends Component {
   constructor(props) {
     super(props);
+    this.timeSeriesSetting = "MONTHLY";
+
     this.state = {
+      stockName: this.props.stockname,
+
       stockChartXValues: [],
       stockChartYValues: [],
 
@@ -40,13 +43,6 @@ export default class MonthlyStock extends Component {
         labels: [],
         xaxis: {
           type: "datetime",
-          labels: {
-            rotateAlways: false,
-            formatter: function (value, timestamp, index) {
-              return moment(new Date(timestamp)).format("DD MMM YYYY");
-            },
-          },
-          tickAmount: 12,
         },
         yaxis: {
           opposite: true,
@@ -61,17 +57,18 @@ export default class MonthlyStock extends Component {
         },
       },
     };
+    this.fetchStock = this.fetchStock.bind(this);
   }
 
-  componentDidMount() {
-    this.fetchStock();
+    componentDidUpdate(prevProps) {
+    if(this.props.stockname !== prevProps.stockname){
+      this.fetchStock();
+    }
   }
 
   fetchStock() {
     const API_KEY = "VH65CPTN371HAJQL";
-    let stockSymbol = "AMZN";
-    const timeSeriesSetting = "MONTHLY";
-    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${timeSeriesSetting}&symbol=${stockSymbol}&outputsize=compact&apikey=${API_KEY}`;
+    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${this.timeSeriesSetting}&symbol=${this.props.stockname}&outputsize=compact&apikey=${API_KEY}`;
 
     let stockChartXValuesFunction = [];
     let stockChartYValuesFunction = [];
@@ -113,7 +110,7 @@ export default class MonthlyStock extends Component {
           stockChartYValues: stockChartYValuesFunction,
           series: [
             {
-              name: stockSymbol,
+              name: this.props.stockname,
               data: temp,
             },
           ],
@@ -121,7 +118,7 @@ export default class MonthlyStock extends Component {
             ...this.state.options,
             title: {
               ...this.state.title,
-              text: timeSeriesSetting + " trading for " + stockSymbol,
+              text: this.timeSeriesSetting + " trading for " + this.props.stockname,
             },
             labels: stockChartXValuesFunction,
           },

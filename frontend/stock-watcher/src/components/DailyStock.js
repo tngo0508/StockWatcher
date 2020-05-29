@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
-import InputForum from "./InputForum";
-// import moment from "moment";
 
 export default class DailyStock extends Component {
   constructor(props) {
     super(props);
+    this.timeSeriesSetting = "DAILY";
+
     this.state = {
-      stockName: "AMZN",
+      stockName: this.props.stockname,
 
       stockChartXValues: [],
       stockChartYValues: [],
@@ -75,18 +75,18 @@ export default class DailyStock extends Component {
     };
 
     this.fetchStock = this.fetchStock.bind(this);
-    this.updateStockChart = this.updateStockChart.bind(this);
   }
 
-  componentDidMount() {
-    this.fetchStock();
+  componentDidUpdate(prevProps) {
+    if(this.props.stockname !== prevProps.stockname){
+      this.fetchStock();
+    }
   }
 
   fetchStock() {
     const API_KEY = "VH65CPTN371HAJQL";
-    const timeSeriesSetting = "DAILY";
-    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${timeSeriesSetting}&symbol=${this.state.stockName}&outputsize=compact&apikey=${API_KEY}`;
-
+    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${ this.timeSeriesSetting }&symbol=${this.props.stockname}&outputsize=compact&apikey=${API_KEY}`;
+    console.log(API_CALL);
     let stockChartXValuesFunction = [];
     let stockChartYValuesFunction = [];
 
@@ -95,7 +95,7 @@ export default class DailyStock extends Component {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
+        //console.log(data);
         const stockTimeSeries = Object.keys(data)[1];
 
         Object.keys(data[stockTimeSeries]).map((date) => {
@@ -120,14 +120,14 @@ export default class DailyStock extends Component {
           };
         });
 
-        console.log(temp);
+        //console.log(temp);
 
         this.setState({
           stockChartXValues: stockChartXValuesFunction,
           stockChartYValues: stockChartYValuesFunction,
           series: [
             {
-              name: this.state.stockName,
+              name: this.props.stockname,
               data: temp,
             },
           ],
@@ -135,7 +135,7 @@ export default class DailyStock extends Component {
             ...this.state.options,
             title: {
               ...this.state.title,
-              text: timeSeriesSetting + " trading for " + this.state.stockName,
+              text: this.timeSeriesSetting + " trading for " + this.props.stockname,
             },
             labels: stockChartXValuesFunction,
           },
@@ -143,14 +143,14 @@ export default class DailyStock extends Component {
       });
   }
 
-  updateStockChart(e){
-    this.setState({stockName: e.target.attributes['stockname'].value}, function () {
-      console.log(this.state.stockName);
-      this.fetchStock();
-    });
-    //console.log(e.target.attributes['stockname'].value);
-    //this.render();
-  }
+  // updateStockChart(e){
+  //   this.setState({stockName: e.target.attributes['stockname'].value}, function () {
+  //     console.log(this.props.stockname);
+  //     this.fetchStock();
+  //   });
+  //   //console.log(e.target.attributes['stockname'].value);
+  //   //this.render();
+  // }
 
   render() {
     //this.fetchStock();
@@ -169,7 +169,6 @@ export default class DailyStock extends Component {
             />
           </div>
         </div>
-        <InputForum OnClick={this.updateStockChart}></InputForum>
       </div>
     );
   }
