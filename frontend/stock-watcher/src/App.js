@@ -1,11 +1,15 @@
 import React from "react";
-import Stock from "./Stock";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import InputForum from "./components/InputForum";
 
 function App() {
   return (
     <div className="App">
-      <Stock></Stock>
+      <div className="container">
+        <InputForum></InputForum>
+        
+      </div>
     </div>
   );
 }
