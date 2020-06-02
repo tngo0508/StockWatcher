@@ -82,11 +82,12 @@ class DailyStock extends Component {
   }
 
   componentDidUpdate() {
+    //console.log(this.state.stockName + " != " + this.props.stockName);
     if (this.state.stockName !== this.props.stockName) {
-      this.setState(() => ({
+      this.setState({
         stockName: this.props.stockName,
-      }));
-      this.fetchStock();
+      },() => this.fetchStock());
+      //this.fetchStock();
     }
   }
 

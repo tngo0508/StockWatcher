@@ -30,7 +30,7 @@ class InputForum extends Component {
       }));
     } else {
       this.setState(() => ({ error: "" }));
-      console.log(this.state.stockName);
+      //console.log(this.state.stockName);
       this.props.updateStockName(this.state.stockName);
     }
   };
