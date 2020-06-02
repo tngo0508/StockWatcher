@@ -1,48 +1,80 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import DailyStock from "./DailyStock";
-import MonthlyStock from "./MonthlyStock";
-import WeeklyStock from "./WeeklyStock";
+// import MonthlyStock from "./MonthlyStock";
+// import WeeklyStock from "./WeeklyStock";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { updateStockName } from "../actions/GraphAction";
+import store from "../store/configureStore";
 
-export default class InputForum extends Component{
-    constructor(props){
-        super(props);
+class InputForum extends Component {
+  constructor(props) {
+    super(props);
 
-        this.input = React.createRef();
+    this.state = {
+      stockName: "",
+      error: "",
+    };
+  }
 
-        this.state = {
-            stockName: "",
-            text: "",
-        }
+  onChange = (e) => {
+    const stockName = e.target.value;
+    this.setState({ stockName });
+  };
 
-        this.updateStock = this.updateStock.bind(this);
-        this.getStockInfo = this.getStockInfo.bind(this);
-        this.updateText = this.updateText.bind(this);
+  onSubmit = (e) => {
+    e.preventDefault();
+    if (!this.state.stockName) {
+      this.setState(() => ({
+        error: "Please enter a stock.",
+      }));
+    } else {
+      this.setState(() => ({ error: "" }));
+      //console.log(this.state.stockName);
+      this.props.updateStockName(this.state.stockName);
     }
+  };
 
-    updateStock(e){
-        this.setState({stockName: this.input.current["value"]});
-    }
+  //   componentDidMount() {
+  //     this.props.updateStockName();
+  //   }
 
-    updateText(e){
-        this.searchText = e.target.value;
+  stockSymbolChange = () => {
+    const currentState = store.getState();
+    if (currentState.graph.stockName) {
+      console.log(currentState.graph.stoc);
     }
+  };
 
-    getStockInfo(e){
-        console.log(this.state.stockName);
-    }
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.onSubmit}>
+          <input
+            type="text"
+            placeholder="Enter Stock Name"
+            onChange={this.onChange}
+          />
+          <button>Search</button>
+        </form>
+        {this.props.stockName && (
+          <DailyStock stockName={this.props.stockName}></DailyStock>
+        )}
 
-    render(){
-        return (
-            <div>
-                <form>
-                    <input type="text" placeholder="Enter Stock Name" ref = {this.input} ></input>
-                    <input type="button" stockname={this.state.stockName} value="search" onClick={this.updateStock}></input>
-                </form>
-                <DailyStock stockname={this.state.stockName}></DailyStock>
-                <WeeklyStock stockname={this.state.stockName}></WeeklyStock>
-                <MonthlyStock stockname={this.state.stockName}></MonthlyStock>
-            </div>
-            
-        );
-    }
+        {/* <WeeklyStock stockname={this.state.stockName}></WeeklyStock>
+        <MonthlyStock stockname={this.state.stockName}></MonthlyStock> */}
+      </div>
+    );
+  }
 }
+
+InputForum.propsTypes = {
+  stockName: PropTypes.string.isRequired,
+  updateStockName: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  stockName: state.graph.stockName,
+});
+
+export default connect(mapStateToProps, { updateStockName })(InputForum);

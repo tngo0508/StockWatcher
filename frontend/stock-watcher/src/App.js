@@ -2,15 +2,18 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import InputForum from "./components/InputForum";
+import { Provider } from "react-redux";
+import store from "./store/configureStore";
 
 function App() {
   return (
-    <div className="App">
-      <div className="container">
-        <InputForum></InputForum>
-        
+    <Provider store={store}>
+      <div className="App">
+        <div className="container">
+          <InputForum></InputForum>
+        </div>
       </div>
-    </div>
+    </Provider>
   );
 }
 
