@@ -13,10 +13,6 @@ export default class MonthlyStock extends Component {
       stockChartYValues: [],
 
       series: [],
-      // series: [{
-      //   name: "STOCK ABC",
-      //   data: series.monthDataSeries1.prices
-      // }],
       options: {
         chart: {
           type: "area",
@@ -60,8 +56,8 @@ export default class MonthlyStock extends Component {
     this.fetchStock = this.fetchStock.bind(this);
   }
 
-    componentDidUpdate(prevProps) {
-    if(this.props.stockname !== prevProps.stockname){
+  componentDidUpdate(prevProps) {
+    if (this.props.stockname !== prevProps.stockname) {
       this.fetchStock();
     }
   }
@@ -118,7 +114,8 @@ export default class MonthlyStock extends Component {
             ...this.state.options,
             title: {
               ...this.state.title,
-              text: this.timeSeriesSetting + " trading for " + this.props.stockname,
+              text:
+                this.timeSeriesSetting + " trading for " + this.props.stockname,
             },
             labels: stockChartXValuesFunction,
           },

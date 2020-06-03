@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { updateStockName } from "../actions/GraphAction";
 import store from "../store/configureStore";
+import DisplayStock from "./DisplayStock";
 
 class InputForum extends Component {
   constructor(props) {
@@ -58,9 +59,10 @@ class InputForum extends Component {
           <button>Search</button>
         </form>
         {this.props.stockName && (
-          <DailyStock stockName={this.props.stockName}></DailyStock>
+          <DisplayStock stockName={this.props.stockName} />
         )}
 
+        {/* <DailyStock stockName={this.props.stockName}></DailyStock> */}
         {/* <WeeklyStock stockname={this.state.stockName}></WeeklyStock>
         <MonthlyStock stockname={this.state.stockName}></MonthlyStock> */}
       </div>
