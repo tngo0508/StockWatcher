@@ -4,6 +4,7 @@ import {
   SET_OPTIONS,
   GET_DATA,
 } from "./types";
+import getStockData from "../helpers/GetStockData";
 
 export const updateStockName = (updates) => {
   return {
@@ -32,8 +33,12 @@ export const setOptions = (options) => {
   };
 };
 
-export const getData = () => {
-  return {
+export const getData = (timeSeriesSetting, stockName) => async (dispatch) => {
+  const data = await getStockData(timeSeriesSetting, stockName);
+  dispatch({
     type: GET_DATA,
-  };
+    payload: {
+      data,
+    },
+  });
 };

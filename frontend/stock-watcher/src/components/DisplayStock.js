@@ -1,13 +1,8 @@
 import React, { Component } from "react";
-import Chart from "react-apexcharts";
+// import Chart from "react-apexcharts";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import {
-  updateStockName,
-  changeTimeSeries,
-  setOptions,
-} from "../actions/GraphAction";
-import GetStockData from "../helpers/GetStockData";
+import { changeTimeSeries, setOptions, getData } from "../actions/GraphAction";
 // import MonthlyStock from "./MonthlyStock";
 // import WeeklyStock from "./WeeklyStock";
 import DailyStock from "./DailyStock";
@@ -17,13 +12,11 @@ class DisplayStock extends Component {
     super(props);
 
     this.state = {
-      stockName: props.stockName,
-      timeSeriesSetting: props.timeSeriesSetting,
-
-      xValues: [],
-      yValues: [],
-
-      series: [],
+      timeSeriesSetting: {
+        daily: "DAILY",
+        weekly: "WEEKLY",
+        monthly: "MONTHLY",
+      },
       options: {
         chart: {
           type: "area",
@@ -78,66 +71,30 @@ class DisplayStock extends Component {
       },
     };
 
-    this.fetchStock = this.fetchStock.bind(this);
+    // this.fetchStock = this.fetchStock.bind(this);
   }
 
-  componentDidUpdate() {
-    if (this.state.stockName !== this.props.stockName) {
-      this.setState(
-        {
-          stockName: this.props.stockName,
-        },
-        () => this.fetchStock()
-      );
-    }
-  }
+  // componentDidUpdate() {
+  //   if (this.state.stockName !== this.props.stockName) {
+  //     this.setState(
+  //       {
+  //         stockName: this.props.stockName,
+  //       },
+  //       () => this.fetchStock()
+  //     );
+  //   }
+  // }
 
   componentDidMount() {
-    if (this.state.timeSeriesSetting) {
-      this.fetchStock();
-    }
-  }
-
-  fetchStock = async () => {
-    const API_KEY = "VH65CPTN371HAJQL";
-
-    const { xValues, yValues, ohlc_data } = await GetStockData(
-      this.state.timeSeriesSetting,
-      this.state.stockName,
-      API_KEY
-    );
-
-    this.setState({
-      xValues,
-      yValues,
-      series: [
-        {
-          name: this.state.stockName,
-          data: ohlc_data,
-        },
-      ],
-      options: {
-        ...this.state.options,
-        title: {
-          ...this.state.title,
-          text:
-            this.state.timeSeriesSetting +
-            " trading for " +
-            this.state.stockName,
-        },
-        labels: xValues,
-      },
-    });
-
     this.props.setOptions(this.state.options);
-  };
+  }
 
   render() {
     return (
       <div className="row">
         <div className="col mt-5">
           <h1 className="text-center">Stock market</h1>
-          <DailyStock />
+          <DailyStock options={this.props.options} />
           {/* <WeeklyStock />
           <WeeklyStock /> */}
           {/* <Chart
@@ -175,4 +132,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   changeTimeSeries,
   setOptions,
+  getData,
 })(DisplayStock);

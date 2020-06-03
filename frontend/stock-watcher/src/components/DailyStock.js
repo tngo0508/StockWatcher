@@ -2,177 +2,93 @@ import React, { Component } from "react";
 import Chart from "react-apexcharts";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { updateStockName } from "../actions/GraphAction";
-// import store from "../store/configureStore";
+import {
+  updateStockName,
+  changeTimeSeries,
+  getData,
+} from "../actions/GraphAction";
+import store from "../store/configureStore";
 
 class DailyStock extends Component {
   constructor(props) {
     super(props);
-    this.timeSeriesSetting = "DAILY";
+
+    console.log(props.options);
 
     this.state = {
-      stockName: this.props.stockName,
+      stockName: props.stockName,
+      timeSeriesSetting: "DAILY",
 
       stockChartXValues: [],
       stockChartYValues: [],
 
       series: [],
-      // series: [{
-      //   name: "STOCK ABC",
-      //   data: series.monthDataSeries1.prices
-      // }],
-      options: {
-        chart: {
-          type: "area",
-          height: 350,
-          zoom: {
-            enabled: false,
-          },
-        },
-        dataLabels: {
-          enabled: false,
-        },
-        stroke: {
-          curve: "straight",
-        },
-
-        title: {
-          text: "Company ABC Daily Stocks",
-          align: "left",
-        },
-        subtitle: {
-          text: "Price Movements",
-          align: "left",
-        },
-        labels: [],
-        xaxis: {
-          type: "datetime",
-          labels: {
-            show: true,
-            // rotate: -45,
-            // format: "dd/MM",
-            maxHeight: 120,
-            style: {
-              colors: "black",
-              fontSize: "12px",
-              fontFamily: "Helvetica, Arial, sans-serif",
-              fontWeight: 400,
-              cssClass: "apexcharts-xaxis-label",
-            },
-          },
-          tickAmount: 100,
-          // position: "top",
-          tickPlacement: "on",
-        },
-        yaxis: {
-          opposite: true,
-          labels: {
-            formatter: function (value) {
-              return value.toString() + " USD";
-            },
-          },
-        },
-        legend: {
-          horizontalAlign: "left",
-        },
-      },
+      options: props.options,
+      data: props.data,
     };
 
-    this.fetchStock = this.fetchStock.bind(this);
+    this.fetchStock = this.fetchStock;
   }
 
   componentDidUpdate() {
     //console.log(this.state.stockName + " != " + this.props.stockName);
     if (this.state.stockName !== this.props.stockName) {
-      this.setState({
-        stockName: this.props.stockName,
-      },() => this.fetchStock());
+      this.setState(
+        {
+          stockName: this.props.stockName,
+          data: this.props.data,
+          options: this.props.options,
+        },
+        () => this.fetchStock()
+      );
       //this.fetchStock();
     }
   }
 
   componentDidMount() {
-    this.fetchStock();
+    this.props.changeTimeSeries(this.state.timeSeriesSetting);
+    this.props.getData(this.state.timeSeriesSetting, this.state.stockName);
+    //   this.setState(
+    //     {
+    //       data: this.props.data,
+    //       options: this.props.options,
+    //     },
+    //     () => this.fetchStock()
+    //   );
   }
 
   fetchStock() {
-    const API_KEY = "VH65CPTN371HAJQL";
-    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${this.timeSeriesSetting}&symbol=${this.state.stockName}&outputsize=compact&apikey=${API_KEY}`;
-    console.log(API_CALL);
-    let stockChartXValuesFunction = [];
-    let stockChartYValuesFunction = [];
-
-    fetch(API_CALL)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        //console.log(data);
-        const stockTimeSeries = Object.keys(data)[1];
-
-        Object.keys(data[stockTimeSeries]).map((date) => {
-          // console.log(date);
-          stockChartXValuesFunction.push(date);
-          const prices = Object.values(data[stockTimeSeries][date]);
-          // console.log(prices);
-          stockChartYValuesFunction.push(prices);
-
-          return { stockChartXValuesFunction, stockChartYValuesFunction };
-        });
-
-        // console.log(stockChartXValuesFunction);
-        // console.log(stockChartYValuesFunction);
-
-        let temp = stockChartXValuesFunction.map((x, idx) => {
-          return {
-            x,
-            y: stockChartYValuesFunction[idx].slice(0, 4).map((p) => {
-              return parseFloat(p).toFixed(2);
-            }),
-          };
-        });
-
-        //console.log(temp);
-
-        this.setState({
-          stockChartXValues: stockChartXValuesFunction,
-          stockChartYValues: stockChartYValuesFunction,
-          series: [
-            {
-              name: this.state.stockName,
-              data: temp,
-            },
-          ],
-          options: {
-            ...this.state.options,
-            title: {
-              ...this.state.title,
-              text:
-                this.timeSeriesSetting + " trading for " + this.state.stockName,
-            },
-            labels: stockChartXValuesFunction,
-          },
-        });
-      });
+    // this.setState({
+    //   stockChartXValues: stockChartXValuesFunction,
+    //   stockChartYValues: stockChartYValuesFunction,
+    //   series: [
+    //     {
+    //       name: this.state.stockName,
+    //       data: temp,
+    //     },
+    //   ],
+    //   options: {
+    //     ...this.state.options,
+    //     title: {
+    //       ...this.state.title,
+    //       text: this.timeSeriesSetting + " trading for " + this.state.stockName,
+    //     },
+    //     labels: stockChartXValuesFunction,
+    //   },
+    // });
   }
 
   render() {
-    //this.fetchStock();
-
     return (
       <div>
-        <div className="row">
-          <div className="col mt-5">
-            <h1 className="text-center">Stock market</h1>
-            <Chart
-              options={this.state.options}
-              series={this.state.series}
-              type="area"
-              height={350}
-              width="100%"
-            />
-          </div>
-        </div>
+        <p hello={this.props.options}></p>
+        <Chart
+          options={this.state.options}
+          series={this.state.series}
+          type="area"
+          height={350}
+          width="100%"
+        />
       </div>
     );
   }
@@ -185,6 +101,12 @@ DailyStock.propsTypes = {
 
 const mapStateToProps = (state) => ({
   stockName: state.graph.stockName,
+  data: state.graph.data,
+  options: state.graph.options,
 });
 
-export default connect(mapStateToProps, { updateStockName })(DailyStock);
+export default connect(mapStateToProps, {
+  updateStockName,
+  changeTimeSeries,
+  getData,
+})(DailyStock);

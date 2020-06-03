@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import DailyStock from "./DailyStock";
+// import DailyStock from "./DailyStock";
 // import MonthlyStock from "./MonthlyStock";
 // import WeeklyStock from "./WeeklyStock";
 import { connect } from "react-redux";
@@ -58,8 +58,10 @@ class InputForum extends Component {
           />
           <button>Search</button>
         </form>
-        {this.props.stockName && (
+        {this.props.stockName && !this.state.error ? (
           <DisplayStock stockName={this.props.stockName} />
+        ) : (
+          <p>{this.state.error}</p>
         )}
 
         {/* <DailyStock stockName={this.props.stockName}></DailyStock> */}

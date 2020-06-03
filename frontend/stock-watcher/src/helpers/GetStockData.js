@@ -1,7 +1,8 @@
-const GetStockData = async (timeSeriesSetting, stockName, API_KEY) => {
-  console.log(timeSeriesSetting);
-  console.log(stockName);
-  console.log(API_KEY);
+const getStockData = async (timeSeriesSetting, stockName) => {
+  // console.log(timeSeriesSetting);
+  // console.log(stockName);
+  // console.log(API_KEY);
+  const API_KEY = "VH65CPTN371HAJQL";
   let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${timeSeriesSetting}&symbol=${stockName}&outputsize=compact&apikey=${API_KEY}`;
   let xValues = [];
   let yValues = [];
@@ -35,4 +36,4 @@ const GetStockData = async (timeSeriesSetting, stockName, API_KEY) => {
   };
 };
 
-export default GetStockData;
+export default getStockData;
