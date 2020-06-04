@@ -114,10 +114,8 @@ class DailyStock extends Component {
 
 DailyStock.propsTypes = {
   stockName: PropTypes.string.isRequired,
-  timeSeriesSetting: PropTypes.string.isRequired,
   updateStockName: PropTypes.func.isRequired,
   changeTimeSeries: PropTypes.func.isRequired,
-  series: PropTypes.array.isRequired,
   getData: PropTypes.func.isRequired,
   xValues: PropTypes.array.isRequired,
   yValues: PropTypes.array.isRequired,

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { changeTimeSeries, setOptions, getData } from "../actions/GraphAction";
+import { setOptions } from "../actions/GraphAction";
 // import MonthlyStock from "./MonthlyStock";
 // import WeeklyStock from "./WeeklyStock";
 import DailyStock from "./DailyStock";
@@ -11,11 +11,6 @@ class DisplayStock extends Component {
     super(props);
 
     this.state = {
-      timeSeriesSetting: {
-        daily: "DAILY",
-        weekly: "WEEKLY",
-        monthly: "MONTHLY",
-      },
       options: {
         chart: {
           type: "area",
@@ -86,13 +81,6 @@ class DisplayStock extends Component {
           <DailyStock />
           {/* <WeeklyStock />
           <WeeklyStock /> */}
-          {/* <Chart
-            options={this.state.options}
-            series={this.state.series}
-            type="area"
-            height={350}
-            width="100%"
-          /> */}
         </div>
       </div>
     );
@@ -100,26 +88,9 @@ class DisplayStock extends Component {
 }
 
 DisplayStock.propsTypes = {
-  stockName: PropTypes.string.isRequired,
-  timeSeriesSetting: PropTypes.string.isRequired,
-  updateStockName: PropTypes.func.isRequired,
-  xValues: PropTypes.array.isRequired,
-  yValues: PropTypes.array.isRequired,
-  series: PropTypes.array.isRequired,
-  options: PropTypes.object.isRequired,
+  setOptions: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  stockName: state.graph.stockName,
-  timeSeriesSetting: state.graph.timeSeriesSetting,
-  xValues: state.graph.xValues,
-  yValues: state.graph.yValues,
-  series: state.graph.series,
-  options: state.graph.options,
-});
-
-export default connect(mapStateToProps, {
-  changeTimeSeries,
+export default connect(null, {
   setOptions,
-  getData,
 })(DisplayStock);
