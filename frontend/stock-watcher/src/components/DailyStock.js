@@ -48,10 +48,13 @@ class DailyStock extends Component {
 
     // if (this.state.stockName !== this.props.stockName) {
     if (prevProps.stockName !== this.props.stockName) {
-      this.props.getData(this.state.timeSeriesSetting, this.state.stockName);
+      this.props.getData(this.state.timeSeriesSetting, this.props.stockName);
       this.setState(
         {
           stockName: this.props.stockName,
+          xValues: this.props.xValues,
+          yValues: this.props.yValues,
+          ohlc_data: this.props.ohlc_data,
         },
         () => this.fetchStock()
       );
