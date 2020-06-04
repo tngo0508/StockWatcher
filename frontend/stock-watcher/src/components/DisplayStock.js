@@ -80,7 +80,6 @@ class DisplayStock extends Component {
       <React.Fragment>
         <div className="row">
           <div className="col mt-5">
-            <h1 className="text-center">Stock market</h1>
             <DailyStock />
             <MonthlyStock />
             <WeeklyStock />

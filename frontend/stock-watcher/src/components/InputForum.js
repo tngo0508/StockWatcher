@@ -48,14 +48,26 @@ class InputForum extends Component {
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.onSubmit}>
-          <input
-            type="text"
-            placeholder="Enter Stock Name"
-            onChange={this.onChange}
-          />
-          <button>Search</button>
+      <div className="mt-5">
+        <form
+          className="form-inline d-flex justify-content-center"
+          onSubmit={this.onSubmit}
+        >
+          <div className="form-group">
+            <div className="input-group">
+              <div className="input-group-prepend">
+                <div class="input-group-text">Stock Symbol</div>
+              </div>
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Enter Stock Name"
+                onChange={this.onChange}
+              />
+            </div>
+
+            <button className="btn btn-primary">Search</button>
+          </div>
         </form>
         {this.props.stockName && !this.state.error ? (
           <DisplayStock />
