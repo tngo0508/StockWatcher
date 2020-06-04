@@ -7,75 +7,98 @@ import {
   changeTimeSeries,
   getData,
 } from "../actions/GraphAction";
-import store from "../store/configureStore";
+// import store from "../store/configureStore";
 
 class DailyStock extends Component {
   constructor(props) {
     super(props);
 
-    console.log(props.options);
-
     this.state = {
       stockName: props.stockName,
       timeSeriesSetting: "DAILY",
 
-      stockChartXValues: [],
-      stockChartYValues: [],
+      xValues: [],
+      yValues: [],
+      ohlc_data: [],
 
       series: [],
       options: props.options,
       data: props.data,
     };
 
-    this.fetchStock = this.fetchStock;
+    this.fetchStock = this.fetchStock.bind(this);
   }
 
-  componentDidUpdate() {
-    //console.log(this.state.stockName + " != " + this.props.stockName);
-    if (this.state.stockName !== this.props.stockName) {
+  componentDidUpdate(prevProps) {
+    console.log(prevProps);
+    if (
+      prevProps.xValues !== this.props.xValues &&
+      prevProps.yValues !== this.props.yValues
+    ) {
       this.setState(
         {
-          stockName: this.props.stockName,
-          data: this.props.data,
+          xValues: this.props.xValues,
+          yValues: this.props.yValues,
+          ohlc_data: this.props.ohlc_data,
           options: this.props.options,
         },
         () => this.fetchStock()
       );
-      //this.fetchStock();
+    }
+
+    // if (this.state.stockName !== this.props.stockName) {
+    if (prevProps.stockName !== this.props.stockName) {
+      this.props.getData(this.state.timeSeriesSetting, this.state.stockName);
+      this.setState(
+        {
+          stockName: this.props.stockName,
+        },
+        () => this.fetchStock()
+      );
     }
   }
 
   componentDidMount() {
     this.props.changeTimeSeries(this.state.timeSeriesSetting);
     this.props.getData(this.state.timeSeriesSetting, this.state.stockName);
-    //   this.setState(
-    //     {
-    //       data: this.props.data,
-    //       options: this.props.options,
-    //     },
-    //     () => this.fetchStock()
-    //   );
   }
 
   fetchStock() {
-    // this.setState({
-    //   stockChartXValues: stockChartXValuesFunction,
-    //   stockChartYValues: stockChartYValuesFunction,
-    //   series: [
-    //     {
-    //       name: this.state.stockName,
-    //       data: temp,
-    //     },
-    //   ],
-    //   options: {
-    //     ...this.state.options,
-    //     title: {
-    //       ...this.state.title,
-    //       text: this.timeSeriesSetting + " trading for " + this.state.stockName,
-    //     },
-    //     labels: stockChartXValuesFunction,
-    //   },
-    // });
+    // console.log(this.state.xValues);
+    // console.log(this.state.yValues);
+    // console.log(this.state.ohlc_data);
+    const rev_xValues = this.state.xValues.slice().reverse();
+    const rev_yValues = this.state.yValues.slice().reverse();
+    const rev_ohlc_data = this.state.ohlc_data.slice().reverse();
+    const seriesData = rev_ohlc_data.map((item) => {
+      const { x, y } = item;
+      return [x, ...y];
+    });
+
+    console.log(seriesData);
+
+    this.setState({
+      xValues: rev_xValues,
+      yValues: rev_yValues,
+      series: [
+        {
+          name: this.state.stockName,
+          data: this.state.ohlc_data.slice().reverse(),
+        },
+      ],
+      // series: [{ data: seriesData }],
+      options: {
+        ...this.state.options,
+        title: {
+          ...this.state.title,
+          text:
+            this.state.timeSeriesSetting +
+            " trading for " +
+            this.state.stockName,
+        },
+        labels: this.state.xValues,
+      },
+    });
   }
 
   render() {
@@ -85,7 +108,7 @@ class DailyStock extends Component {
         <Chart
           options={this.state.options}
           series={this.state.series}
-          type="area"
+          type="candlestick"
           height={350}
           width="100%"
         />
@@ -97,11 +120,16 @@ class DailyStock extends Component {
 DailyStock.propsTypes = {
   stockName: PropTypes.string.isRequired,
   updateStockName: PropTypes.func.isRequired,
+  xValues: PropTypes.array.isRequired,
+  yValues: PropTypes.array.isRequired,
+  ohlc_data: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   stockName: state.graph.stockName,
-  data: state.graph.data,
+  xValues: state.graph.data.xValues,
+  yValues: state.graph.data.yValues,
+  ohlc_data: state.graph.data.ohlc_data,
   options: state.graph.options,
 });
 

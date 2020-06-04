@@ -22,7 +22,7 @@ class DisplayStock extends Component {
           type: "area",
           height: 350,
           zoom: {
-            enabled: false,
+            enabled: true,
           },
         },
         dataLabels: {
@@ -64,6 +64,9 @@ class DisplayStock extends Component {
               return value.toString() + " USD";
             },
           },
+          tooltip: {
+            enabled: false,
+          },
         },
         legend: {
           horizontalAlign: "left",
@@ -94,7 +97,7 @@ class DisplayStock extends Component {
       <div className="row">
         <div className="col mt-5">
           <h1 className="text-center">Stock market</h1>
-          <DailyStock options={this.props.options} />
+          <DailyStock />
           {/* <WeeklyStock />
           <WeeklyStock /> */}
           {/* <Chart
