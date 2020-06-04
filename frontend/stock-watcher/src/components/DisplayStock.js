@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import Chart from "react-apexcharts";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { changeTimeSeries, setOptions, getData } from "../actions/GraphAction";
@@ -73,20 +72,7 @@ class DisplayStock extends Component {
         },
       },
     };
-
-    // this.fetchStock = this.fetchStock.bind(this);
   }
-
-  // componentDidUpdate() {
-  //   if (this.state.stockName !== this.props.stockName) {
-  //     this.setState(
-  //       {
-  //         stockName: this.props.stockName,
-  //       },
-  //       () => this.fetchStock()
-  //     );
-  //   }
-  // }
 
   componentDidMount() {
     this.props.setOptions(this.state.options);

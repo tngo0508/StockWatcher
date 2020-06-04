@@ -22,8 +22,7 @@ class DailyStock extends Component {
       ohlc_data: [],
 
       series: [],
-      options: props.options,
-      data: props.data,
+      options: {},
     };
 
     this.fetchStock = this.fetchStock.bind(this);
@@ -115,10 +114,15 @@ class DailyStock extends Component {
 
 DailyStock.propsTypes = {
   stockName: PropTypes.string.isRequired,
+  timeSeriesSetting: PropTypes.string.isRequired,
   updateStockName: PropTypes.func.isRequired,
+  changeTimeSeries: PropTypes.func.isRequired,
+  series: PropTypes.array.isRequired,
+  getData: PropTypes.func.isRequired,
   xValues: PropTypes.array.isRequired,
   yValues: PropTypes.array.isRequired,
   ohlc_data: PropTypes.array.isRequired,
+  options: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

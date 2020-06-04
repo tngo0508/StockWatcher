@@ -8,12 +8,6 @@ import {
 const initialState = {
   stockName: "",
   timeSeriesSetting: "",
-
-  xValues: [],
-  yValues: [],
-
-  series: [],
-  options: {},
   data: {},
 };
 
