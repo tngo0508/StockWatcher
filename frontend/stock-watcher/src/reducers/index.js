@@ -1,6 +1,8 @@
 import { combineReducers } from "redux";
-import graphReducer from "./GraphReducer";
+import dailyGraphReducer from "./DailyGraphReducer";
+import monthlyGraphReducer from "./MonthlyGraphReducer";
 
 export default combineReducers({
-  graph: graphReducer,
+  daily: dailyGraphReducer,
+  monthly: monthlyGraphReducer,
 });

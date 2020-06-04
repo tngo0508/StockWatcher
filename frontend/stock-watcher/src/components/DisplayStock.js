@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { setOptions } from "../actions/GraphAction";
-// import MonthlyStock from "./MonthlyStock";
+import { dailySetOptions } from "../actions/DailyGraphAction";
+import { monthlySetOptions } from "../actions/MonthlyGraphAction";
+import MonthlyStock from "./MonthlyStock";
 // import WeeklyStock from "./WeeklyStock";
 import DailyStock from "./DailyStock";
 
@@ -70,27 +71,30 @@ class DisplayStock extends Component {
   }
 
   componentDidMount() {
-    this.props.setOptions(this.state.options);
+    this.props.dailySetOptions(this.state.options);
+    this.props.monthlySetOptions(this.state.options);
   }
 
   render() {
     return (
-      <div className="row">
-        <div className="col mt-5">
-          <h1 className="text-center">Stock market</h1>
-          <DailyStock />
-          {/* <WeeklyStock />
-          <WeeklyStock /> */}
+      <React.Fragment>
+        <div className="row">
+          <div className="col mt-5">
+            <h1 className="text-center">Stock market</h1>
+            <DailyStock />
+            <MonthlyStock />
+          </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }
 
 DisplayStock.propsTypes = {
-  setOptions: PropTypes.func.isRequired,
+  dailySetOptions: PropTypes.func.isRequired,
 };
 
 export default connect(null, {
-  setOptions,
+  dailySetOptions,
+  monthlySetOptions,
 })(DisplayStock);

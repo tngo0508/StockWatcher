@@ -4,7 +4,8 @@ import React, { Component } from "react";
 // import WeeklyStock from "./WeeklyStock";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { updateStockName } from "../actions/GraphAction";
+import { dailyUpdateStockName } from "../actions/DailyGraphAction";
+import { monthlyUpdateStockName } from "../actions/MonthlyGraphAction";
 import store from "../store/configureStore";
 import DisplayStock from "./DisplayStock";
 
@@ -32,18 +33,15 @@ class InputForum extends Component {
     } else {
       this.setState(() => ({ error: "" }));
       //console.log(this.state.stockName);
-      this.props.updateStockName(this.state.stockName);
+      this.props.dailyUpdateStockName(this.state.stockName);
+      this.props.monthlyUpdateStockName(this.state.stockName);
     }
   };
 
-  //   componentDidMount() {
-  //     this.props.updateStockName();
-  //   }
-
   stockSymbolChange = () => {
     const currentState = store.getState();
-    if (currentState.graph.stockName) {
-      console.log(currentState.graph.stoc);
+    if (currentState.daily.stockName) {
+      console.log(currentState.daily.stockName);
     }
   };
 
@@ -59,7 +57,7 @@ class InputForum extends Component {
           <button>Search</button>
         </form>
         {this.props.stockName && !this.state.error ? (
-          <DisplayStock stockName={this.props.stockName} />
+          <DisplayStock />
         ) : (
           <p>{this.state.error}</p>
         )}
@@ -74,11 +72,15 @@ class InputForum extends Component {
 
 InputForum.propsTypes = {
   stockName: PropTypes.string.isRequired,
-  updateStockName: PropTypes.func.isRequired,
+  dailyUpdateStockName: PropTypes.func.isRequired,
+  monthlyUpdateStockName: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  stockName: state.graph.stockName,
+  stockName: state.daily.stockName,
 });
 
-export default connect(mapStateToProps, { updateStockName })(InputForum);
+export default connect(mapStateToProps, {
+  dailyUpdateStockName,
+  monthlyUpdateStockName,
+})(InputForum);

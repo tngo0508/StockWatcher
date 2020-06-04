@@ -1,141 +1,134 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import {
+  monthlyUpdateStockName,
+  monthlyGetData,
+} from "../actions/MonthlyGraphAction";
 
-export default class MonthlyStock extends Component {
+class MonthlyStock extends Component {
   constructor(props) {
     super(props);
-    this.timeSeriesSetting = "MONTHLY";
+    // console.log(props.stockName);
 
     this.state = {
-      stockName: this.props.stockname,
-
-      stockChartXValues: [],
-      stockChartYValues: [],
+      stockName: props.stockName,
+      timeSeriesSetting: "MONTHLY",
+      xValues: [],
+      yValues: [],
 
       series: [],
-      options: {
-        chart: {
-          type: "area",
-          height: 350,
-          zoom: {
-            enabled: false,
-          },
-        },
-        dataLabels: {
-          enabled: false,
-        },
-        stroke: {
-          curve: "straight",
-        },
-
-        title: {
-          text: "Company ABC Daily Stocks",
-          align: "left",
-        },
-        subtitle: {
-          text: "Price Movements",
-          align: "left",
-        },
-        labels: [],
-        xaxis: {
-          type: "datetime",
-        },
-        yaxis: {
-          opposite: true,
-          labels: {
-            formatter: function (value) {
-              return value.toString() + " USD";
-            },
-          },
-        },
-        legend: {
-          horizontalAlign: "left",
-        },
-      },
+      options: {},
     };
     this.fetchStock = this.fetchStock.bind(this);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.stockname !== prevProps.stockname) {
-      this.fetchStock();
+    // console.log(prevProps);
+    if (
+      prevProps.xValues !== this.props.xValues &&
+      prevProps.yValues !== this.props.yValues
+    ) {
+      this.setState(
+        {
+          xValues: this.props.xValues,
+          yValues: this.props.yValues,
+          ohlc_data: this.props.ohlc_data,
+          options: this.props.options,
+        },
+        () => this.fetchStock()
+      );
+    }
+
+    // if (this.state.stockName !== this.props.stockName) {
+    if (prevProps.stockName !== this.props.stockName) {
+      this.props.monthlyGetData(
+        this.state.timeSeriesSetting,
+        this.props.stockName
+      );
+      this.setState(
+        {
+          stockName: this.props.stockName,
+          xValues: this.props.xValues,
+          yValues: this.props.yValues,
+          ohlc_data: this.props.ohlc_data,
+        },
+        () => this.fetchStock()
+      );
     }
   }
 
+  componentDidMount() {
+    // console.log(this.props.stockName);
+    this.props.monthlyGetData(
+      this.state.timeSeriesSetting,
+      this.state.stockName
+    );
+  }
+
   fetchStock() {
-    const API_KEY = "VH65CPTN371HAJQL";
-    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${this.timeSeriesSetting}&symbol=${this.props.stockname}&outputsize=compact&apikey=${API_KEY}`;
+    const rev_xValues = this.state.xValues.slice().reverse();
+    const rev_yValues = this.state.yValues.slice().reverse();
+    const rev_ohlc_data = this.state.ohlc_data.slice().reverse();
 
-    let stockChartXValuesFunction = [];
-    let stockChartYValuesFunction = [];
-
-    fetch(API_CALL)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        // console.log(data);
-        const stockTimeSeries = Object.keys(data)[1];
-
-        Object.keys(data[stockTimeSeries]).map((date) => {
-          // console.log(date);
-          stockChartXValuesFunction.push(date);
-          const prices = Object.values(data[stockTimeSeries][date]);
-          // console.log(prices);
-          stockChartYValuesFunction.push(prices);
-
-          return { stockChartXValuesFunction, stockChartYValuesFunction };
-        });
-
-        // console.log(stockChartXValuesFunction);
-        // console.log(stockChartYValuesFunction);
-
-        let temp = stockChartXValuesFunction.map((x, idx) => {
-          return {
-            x,
-            y: stockChartYValuesFunction[idx].slice(0, 4).map((p) => {
-              return parseFloat(p).toFixed(2);
-            }),
-          };
-        });
-
-        console.log(temp);
-
-        this.setState({
-          stockChartXValues: stockChartXValuesFunction,
-          stockChartYValues: stockChartYValuesFunction,
-          series: [
-            {
-              name: this.props.stockname,
-              data: temp,
-            },
-          ],
-          options: {
-            ...this.state.options,
-            title: {
-              ...this.state.title,
-              text:
-                this.timeSeriesSetting + " trading for " + this.props.stockname,
-            },
-            labels: stockChartXValuesFunction,
-          },
-        });
-      });
+    this.setState({
+      xValues: rev_xValues,
+      yValues: rev_yValues,
+      series: [
+        {
+          name: this.state.stockName,
+          data: rev_ohlc_data,
+        },
+      ],
+      options: {
+        ...this.props.options,
+        title: {
+          ...this.state.title,
+          text:
+            this.state.timeSeriesSetting +
+            " trading for " +
+            this.state.stockName,
+        },
+        labels: this.state.xValues,
+      },
+    });
   }
 
   render() {
     return (
-      <div className="row">
-        <div className="col mt-5">
-          <Chart
-            options={this.state.options}
-            series={this.state.series}
-            type="area"
-            height={350}
-            width="100%"
-          />
-        </div>
+      <div>
+        <Chart
+          options={this.state.options}
+          series={this.state.series}
+          type="candlestick"
+          height={350}
+          width="100%"
+        />
       </div>
     );
   }
 }
+
+MonthlyStock.propsTypes = {
+  stockName: PropTypes.string.isRequired,
+  monthlyUpdateStockName: PropTypes.func.isRequired,
+  monthlyGetData: PropTypes.func.isRequired,
+  xValues: PropTypes.array.isRequired,
+  yValues: PropTypes.array.isRequired,
+  ohlc_data: PropTypes.array.isRequired,
+  options: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  stockName: state.monthly.stockName,
+  xValues: state.monthly.data.xValues,
+  yValues: state.monthly.data.yValues,
+  ohlc_data: state.monthly.data.ohlc_data,
+  options: state.monthly.options,
+});
+
+export default connect(mapStateToProps, {
+  monthlyUpdateStockName,
+  monthlyGetData,
+})(MonthlyStock);

@@ -3,10 +3,10 @@ import Chart from "react-apexcharts";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import {
-  updateStockName,
-  changeTimeSeries,
-  getData,
-} from "../actions/GraphAction";
+  dailyUpdateStockName,
+  // changeTimeSeries,
+  dailyGetData,
+} from "../actions/DailyGraphAction";
 // import store from "../store/configureStore";
 
 class DailyStock extends Component {
@@ -29,7 +29,7 @@ class DailyStock extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log(prevProps);
+    // console.log(prevProps);
     if (
       prevProps.xValues !== this.props.xValues &&
       prevProps.yValues !== this.props.yValues
@@ -47,7 +47,10 @@ class DailyStock extends Component {
 
     // if (this.state.stockName !== this.props.stockName) {
     if (prevProps.stockName !== this.props.stockName) {
-      this.props.getData(this.state.timeSeriesSetting, this.props.stockName);
+      this.props.dailyGetData(
+        this.state.timeSeriesSetting,
+        this.props.stockName
+      );
       this.setState(
         {
           stockName: this.props.stockName,
@@ -61,8 +64,8 @@ class DailyStock extends Component {
   }
 
   componentDidMount() {
-    this.props.changeTimeSeries(this.state.timeSeriesSetting);
-    this.props.getData(this.state.timeSeriesSetting, this.state.stockName);
+    // this.props.changeTimeSeries(this.state.timeSeriesSetting);
+    this.props.dailyGetData(this.state.timeSeriesSetting, this.state.stockName);
   }
 
   fetchStock() {
@@ -99,7 +102,6 @@ class DailyStock extends Component {
   render() {
     return (
       <div>
-        <p hello={this.props.options}></p>
         <Chart
           options={this.state.options}
           series={this.state.series}
@@ -114,9 +116,9 @@ class DailyStock extends Component {
 
 DailyStock.propsTypes = {
   stockName: PropTypes.string.isRequired,
-  updateStockName: PropTypes.func.isRequired,
-  changeTimeSeries: PropTypes.func.isRequired,
-  getData: PropTypes.func.isRequired,
+  dailyUpdateStockName: PropTypes.func.isRequired,
+  // changeTimeSeries: PropTypes.func.isRequired,
+  dailyGetData: PropTypes.func.isRequired,
   xValues: PropTypes.array.isRequired,
   yValues: PropTypes.array.isRequired,
   ohlc_data: PropTypes.array.isRequired,
@@ -124,15 +126,15 @@ DailyStock.propsTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  stockName: state.graph.stockName,
-  xValues: state.graph.data.xValues,
-  yValues: state.graph.data.yValues,
-  ohlc_data: state.graph.data.ohlc_data,
-  options: state.graph.options,
+  stockName: state.daily.stockName,
+  xValues: state.daily.data.xValues,
+  yValues: state.daily.data.yValues,
+  ohlc_data: state.daily.data.ohlc_data,
+  options: state.daily.options,
 });
 
 export default connect(mapStateToProps, {
-  updateStockName,
-  changeTimeSeries,
-  getData,
+  dailyUpdateStockName,
+  // changeTimeSeries,
+  dailyGetData,
 })(DailyStock);
