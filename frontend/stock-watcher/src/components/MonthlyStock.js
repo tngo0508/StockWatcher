@@ -41,7 +41,6 @@ class MonthlyStock extends Component {
       );
     }
 
-    // if (this.state.stockName !== this.props.stockName) {
     if (prevProps.stockName !== this.props.stockName) {
       this.props.monthlyGetData(
         this.state.timeSeriesSetting,

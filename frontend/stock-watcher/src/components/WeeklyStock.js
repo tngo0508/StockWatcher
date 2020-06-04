@@ -1,144 +1,132 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import {
+  weeklyUpdateStockName,
+  weeklyGetData,
+} from "../actions/WeeklyGraphAction";
 
-export default class WeeklyStock extends Component {
+class WeeklyStock extends Component {
   constructor(props) {
     super(props);
-    this.timeSeriesSetting = "WEEKLY";
 
     this.state = {
-      stockName: this.props.stockname,
+      stockName: props.stockName,
+      timeSeriesSetting: "WEEKLY",
 
       stockChartXValues: [],
       stockChartYValues: [],
 
       series: [],
-      // series: [{
-      //   name: "STOCK ABC",
-      //   data: series.monthDataSeries1.prices
-      // }],
-      options: {
-        chart: {
-          type: "area",
-          height: 350,
-          zoom: {
-            enabled: false,
-          },
-        },
-        dataLabels: {
-          enabled: false,
-        },
-        stroke: {
-          curve: "straight",
-        },
-
-        title: {
-          text: "Company ABC Daily Stocks",
-          align: "left",
-        },
-        subtitle: {
-          text: "Price Movements",
-          align: "left",
-        },
-        labels: [],
-        xaxis: {
-          type: "datetime",
-        },
-        yaxis: {
-          opposite: true,
-          labels: {
-            formatter: function (value) {
-              return value.toString() + " USD";
-            },
-          },
-        },
-        legend: {
-          horizontalAlign: "left",
-        },
-      },
+      options: {},
     };
     this.fetchStock = this.fetchStock.bind(this);
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.stockname !== prevProps.stockname){
-      this.fetchStock();
+    if (
+      prevProps.xValues !== this.props.xValues &&
+      prevProps.yValues !== this.props.yValues
+    ) {
+      this.setState(
+        {
+          xValues: this.props.xValues,
+          yValues: this.props.yValues,
+          ohlc_data: this.props.ohlc_data,
+          options: this.props.options,
+        },
+        () => this.fetchStock()
+      );
+    }
+
+    if (prevProps.stockName !== this.props.stockName) {
+      this.props.weeklyGetData(
+        this.state.timeSeriesSetting,
+        this.props.stockName
+      );
+      this.setState(
+        {
+          stockName: this.props.stockName,
+          xValues: this.props.xValues,
+          yValues: this.props.yValues,
+          ohlc_data: this.props.ohlc_data,
+        },
+        () => this.fetchStock()
+      );
     }
   }
 
+  componentDidMount() {
+    console.log(this.state.timeSeriesSetting, this.state.stockName);
+    this.props.weeklyGetData(
+      this.state.timeSeriesSetting,
+      this.state.stockName
+    );
+  }
+
   fetchStock() {
-    const API_KEY = "VH65CPTN371HAJQL";
-    let API_CALL = `https://www.alphavantage.co/query?function=TIME_SERIES_${this.timeSeriesSetting}&symbol=${this.props.stockname}&outputsize=compact&apikey=${API_KEY}`;
+    const rev_xValues = this.state.xValues.slice().reverse();
+    const rev_yValues = this.state.yValues.slice().reverse();
+    const rev_ohlc_data = this.state.ohlc_data.slice().reverse();
 
-    let stockChartXValuesFunction = [];
-    let stockChartYValuesFunction = [];
-
-    fetch(API_CALL)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        // console.log(data);
-        const stockTimeSeries = Object.keys(data)[1];
-
-        Object.keys(data[stockTimeSeries]).map((date) => {
-          // console.log(date);
-          stockChartXValuesFunction.push(date);
-          const prices = Object.values(data[stockTimeSeries][date]);
-          // console.log(prices);
-          stockChartYValuesFunction.push(prices);
-
-          return { stockChartXValuesFunction, stockChartYValuesFunction };
-        });
-
-        // console.log(stockChartXValuesFunction);
-        // console.log(stockChartYValuesFunction);
-
-        let temp = stockChartXValuesFunction.map((x, idx) => {
-          return {
-            x,
-            y: stockChartYValuesFunction[idx].slice(0, 4).map((p) => {
-              return parseFloat(p).toFixed(2);
-            }),
-          };
-        });
-
-        // console.log(temp);
-
-        this.setState({
-          stockChartXValues: stockChartXValuesFunction,
-          stockChartYValues: stockChartYValuesFunction,
-          series: [
-            {
-              name: this.props.stockname,
-              data: temp,
-            },
-          ],
-          options: {
-            ...this.state.options,
-            title: {
-              ...this.state.title,
-              text: this.timeSeriesSetting + " trading for " + this.props.stockname,
-            },
-            labels: stockChartXValuesFunction,
-          },
-        });
-      });
+    this.setState({
+      xValues: rev_xValues,
+      yValues: rev_yValues,
+      series: [
+        {
+          name: this.state.stockName,
+          data: rev_ohlc_data,
+        },
+      ],
+      options: {
+        ...this.state.options,
+        title: {
+          ...this.state.title,
+          text:
+            this.state.timeSeriesSetting +
+            " trading for " +
+            this.state.stockName,
+        },
+        labels: this.state.xValues,
+      },
+    });
   }
 
   render() {
     return (
-      <div className="row">
-        <div className="col mt-5">
-          <Chart
-            options={this.state.options}
-            series={this.state.series}
-            type="area"
-            height={350}
-            width="100%"
-          />
-        </div>
+      <div>
+        <Chart
+          options={this.state.options}
+          series={this.state.series}
+          type="candlestick"
+          height={350}
+          width="100%"
+        />
       </div>
     );
   }
 }
+
+WeeklyStock.propsTypes = {
+  stockName: PropTypes.string.isRequired,
+  dailyUpdateStockName: PropTypes.func.isRequired,
+  dailyGetData: PropTypes.func.isRequired,
+  xValues: PropTypes.array.isRequired,
+  yValues: PropTypes.array.isRequired,
+  ohlc_data: PropTypes.array.isRequired,
+  options: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  stockName: state.weekly.stockName,
+  xValues: state.weekly.data.xValues,
+  yValues: state.weekly.data.yValues,
+  ohlc_data: state.weekly.data.ohlc_data,
+  options: state.weekly.options,
+});
+
+export default connect(mapStateToProps, {
+  weeklyUpdateStockName,
+  weeklyGetData,
+})(WeeklyStock);

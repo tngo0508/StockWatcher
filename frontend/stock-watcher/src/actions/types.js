@@ -1,7 +1,14 @@
+// daily stock action
 export const DAILY_UPDATE_STOCK_SYMBOL = "DAILY_UPDATE_STOCK_SYMBOL";
 export const DAILY_SET_OPTIONS = "DAILY_SET_OPTIONS";
 export const DAILY_GET_DATA = "DAILY_GET_DATA";
 
+// weekly stock action
 export const MONTHLY_UPDATE_STOCK_SYMBOL = "MONTHLY_UPDATE_STOCK_SYMBOL";
 export const MONTHLY_SET_OPTIONS = "MONTHLY_SET_OPTIONS";
 export const MONTHLY_GET_DATA = "MONTHLY_GET_DATA";
+
+// monthly stock action
+export const WEEKLY_UPDATE_STOCK_SYMBOL = "WEEKLY_UPDATE_STOCK_SYMBOL";
+export const WEEKLY_SET_OPTIONS = "WEEKLY_SET_OPTIONS";
+export const WEEKLY_GET_DATA = "WEEKLY_GET_DATA";

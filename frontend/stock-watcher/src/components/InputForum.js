@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { dailyUpdateStockName } from "../actions/DailyGraphAction";
 import { monthlyUpdateStockName } from "../actions/MonthlyGraphAction";
+import { weeklyUpdateStockName } from "../actions/WeeklyGraphAction";
 import store from "../store/configureStore";
 import DisplayStock from "./DisplayStock";
 
@@ -32,9 +33,9 @@ class InputForum extends Component {
       }));
     } else {
       this.setState(() => ({ error: "" }));
-      //console.log(this.state.stockName);
       this.props.dailyUpdateStockName(this.state.stockName);
       this.props.monthlyUpdateStockName(this.state.stockName);
+      this.props.weeklyUpdateStockName(this.state.stockName);
     }
   };
 
@@ -61,10 +62,6 @@ class InputForum extends Component {
         ) : (
           <p>{this.state.error}</p>
         )}
-
-        {/* <DailyStock stockName={this.props.stockName}></DailyStock> */}
-        {/* <WeeklyStock stockname={this.state.stockName}></WeeklyStock>
-        <MonthlyStock stockname={this.state.stockName}></MonthlyStock> */}
       </div>
     );
   }
@@ -74,6 +71,7 @@ InputForum.propsTypes = {
   stockName: PropTypes.string.isRequired,
   dailyUpdateStockName: PropTypes.func.isRequired,
   monthlyUpdateStockName: PropTypes.func.isRequired,
+  weeklyUpdateStockName: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -83,4 +81,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   dailyUpdateStockName,
   monthlyUpdateStockName,
+  weeklyUpdateStockName,
 })(InputForum);

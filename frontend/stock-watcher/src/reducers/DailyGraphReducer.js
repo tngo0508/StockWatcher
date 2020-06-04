@@ -24,11 +24,6 @@ export default (state = initialState, action) => {
         ...state,
         stockName: action.payload.stockName,
       };
-    // case CHANGE_TIME_SERIES:
-    //   return {
-    //     ...state,
-    //     timeSeriesSetting: action.payload.timeSeriesSetting,
-    //   };
     case DAILY_SET_OPTIONS:
       return {
         ...state,

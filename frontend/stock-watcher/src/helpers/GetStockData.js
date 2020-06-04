@@ -10,6 +10,8 @@ const getStockData = async (timeSeriesSetting, stockName) => {
         return `https://www.alphavantage.co/query?function=TIME_SERIES_${timeSeriesSetting}&symbol=${stockName}&outputsize=compact&apikey=${API_KEY}`;
       case "MONTHLY":
         return `https://www.alphavantage.co/query?function=TIME_SERIES_${timeSeriesSetting}&symbol=${stockName}&apikey=${API_KEY}`;
+      case "WEEKLY":
+        return `https://www.alphavantage.co/query?function=TIME_SERIES_${timeSeriesSetting}&symbol=${stockName}&apikey=${API_KEY}`;
       default:
         break;
     }

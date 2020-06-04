@@ -4,10 +4,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import {
   dailyUpdateStockName,
-  // changeTimeSeries,
   dailyGetData,
 } from "../actions/DailyGraphAction";
-// import store from "../store/configureStore";
 
 class DailyStock extends Component {
   constructor(props) {
@@ -29,7 +27,6 @@ class DailyStock extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // console.log(prevProps);
     if (
       prevProps.xValues !== this.props.xValues &&
       prevProps.yValues !== this.props.yValues
@@ -45,7 +42,6 @@ class DailyStock extends Component {
       );
     }
 
-    // if (this.state.stockName !== this.props.stockName) {
     if (prevProps.stockName !== this.props.stockName) {
       this.props.dailyGetData(
         this.state.timeSeriesSetting,
@@ -64,14 +60,10 @@ class DailyStock extends Component {
   }
 
   componentDidMount() {
-    // this.props.changeTimeSeries(this.state.timeSeriesSetting);
     this.props.dailyGetData(this.state.timeSeriesSetting, this.state.stockName);
   }
 
   fetchStock() {
-    // console.log(this.state.xValues);
-    // console.log(this.state.yValues);
-    // console.log(this.state.ohlc_data);
     const rev_xValues = this.state.xValues.slice().reverse();
     const rev_yValues = this.state.yValues.slice().reverse();
     const rev_ohlc_data = this.state.ohlc_data.slice().reverse();
@@ -117,7 +109,6 @@ class DailyStock extends Component {
 DailyStock.propsTypes = {
   stockName: PropTypes.string.isRequired,
   dailyUpdateStockName: PropTypes.func.isRequired,
-  // changeTimeSeries: PropTypes.func.isRequired,
   dailyGetData: PropTypes.func.isRequired,
   xValues: PropTypes.array.isRequired,
   yValues: PropTypes.array.isRequired,
@@ -135,6 +126,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
   dailyUpdateStockName,
-  // changeTimeSeries,
   dailyGetData,
 })(DailyStock);

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { dailySetOptions } from "../actions/DailyGraphAction";
 import { monthlySetOptions } from "../actions/MonthlyGraphAction";
 import MonthlyStock from "./MonthlyStock";
-// import WeeklyStock from "./WeeklyStock";
+import WeeklyStock from "./WeeklyStock";
 import DailyStock from "./DailyStock";
 
 class DisplayStock extends Component {
@@ -83,6 +83,7 @@ class DisplayStock extends Component {
             <h1 className="text-center">Stock market</h1>
             <DailyStock />
             <MonthlyStock />
+            <WeeklyStock />
           </div>
         </div>
       </React.Fragment>
