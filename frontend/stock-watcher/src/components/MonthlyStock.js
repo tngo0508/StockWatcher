@@ -6,6 +6,7 @@ import {
   monthlyUpdateStockName,
   monthlyGetData,
 } from "../actions/MonthlyGraphAction";
+import Spinner from "../layout/spinner";
 
 class MonthlyStock extends Component {
   constructor(props) {
@@ -95,17 +96,23 @@ class MonthlyStock extends Component {
   }
 
   render() {
-    return (
-      <div>
-        <Chart
-          options={this.state.options}
-          series={this.state.series}
-          type="candlestick"
-          height={350}
-          width="100%"
-        />
-      </div>
-    );
+    const { xValues, yValues, ohlc_data } = this.props;
+
+    if (xValues && yValues && ohlc_data) {
+      return (
+        <div>
+          <Chart
+            options={this.state.options}
+            series={this.state.series}
+            type="candlestick"
+            height={350}
+            width="100%"
+          />
+        </div>
+      );
+    } else {
+      return <Spinner />;
+    }
   }
 }
 

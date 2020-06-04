@@ -56,12 +56,13 @@ class InputForum extends Component {
           <div className="form-group">
             <div className="input-group">
               <div className="input-group-prepend">
-                <div class="input-group-text">Stock Symbol</div>
+                <div className="input-group-text">Stock Symbol</div>
               </div>
               <input
                 className="form-control"
                 type="text"
                 placeholder="Enter Stock Name"
+                autoFocus
                 onChange={this.onChange}
               />
             </div>
@@ -69,6 +70,7 @@ class InputForum extends Component {
             <button className="btn btn-primary">Search</button>
           </div>
         </form>
+
         {this.props.stockName && !this.state.error ? (
           <DisplayStock />
         ) : (
