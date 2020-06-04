@@ -20,6 +20,8 @@ class DisplayStock extends Component {
           zoom: {
             enabled: true,
           },
+          background: "#0a0a0a",
+          foreColor: "#fff",
         },
         dataLabels: {
           enabled: false,
@@ -40,7 +42,7 @@ class DisplayStock extends Component {
         xaxis: {
           type: "datetime",
           labels: {
-            show: true,
+            show: false,
             maxHeight: 120,
             style: {
               colors: "black",
@@ -51,7 +53,7 @@ class DisplayStock extends Component {
             },
           },
           tickAmount: 100,
-          tickPlacement: "on",
+          tickPlacement: "between",
         },
         yaxis: {
           opposite: true,
