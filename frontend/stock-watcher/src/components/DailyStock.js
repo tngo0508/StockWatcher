@@ -70,12 +70,6 @@ class DailyStock extends Component {
     const rev_xValues = this.state.xValues.slice().reverse();
     const rev_yValues = this.state.yValues.slice().reverse();
     const rev_ohlc_data = this.state.ohlc_data.slice().reverse();
-    const seriesData = rev_ohlc_data.map((item) => {
-      const { x, y } = item;
-      return [x, ...y];
-    });
-
-    console.log(seriesData);
 
     this.setState({
       xValues: rev_xValues,
@@ -83,10 +77,9 @@ class DailyStock extends Component {
       series: [
         {
           name: this.state.stockName,
-          data: this.state.ohlc_data.slice().reverse(),
+          data: rev_ohlc_data,
         },
       ],
-      // series: [{ data: seriesData }],
       options: {
         ...this.state.options,
         title: {
